@@ -94,8 +94,8 @@ angular.module('wechat.controllers', [])
 })
 
 .controller('messageDetailCtrl', ['$scope', '$stateParams',
-    'messageService', '$ionicScrollDelegate', '$timeout',
-    function($scope, $stateParams, messageService, $ionicScrollDelegate, $timeout) {
+    'messageService', '$ionicScrollDelegate', '$ionicActionSheet', '$timeout',
+    function($scope, $stateParams, messageService, $ionicScrollDelegate, $ionicActionSheet, $timeout) {
         var viewScroll = $ionicScrollDelegate.$getByHandle('messageDetailsScroll');
         // console.log("enter");
         $scope.doRefresh = function() {
@@ -121,8 +121,59 @@ angular.module('wechat.controllers', [])
             }, 0);
         });
 
+        $scope.startRecord = function () {
+            wxjs.run(function () {
+                alert('startRecord');
+                wx.startRecord();
+            });
+        };
+
+        $scope.stopRecord = function () {
+            alert('stopRecord');
+            wx.stopRecord({
+                success: function (res) {
+                    var localId = res.localId;
+                    alert(localId);
+                }
+            });
+        };
+
+        $scope.show = function() {
+            // Show the action sheet
+            var hideSheet = $ionicActionSheet.show({
+                buttons: [
+                    { text: '<i class="ion-ios-camera icon-button icon-action" ></i>    <span class="tab-action"></span>     <i class="text-action">照片</i> ' },
+                    { text: '<i class="ion-social-instagram icon-button icon-action" ></i>   <span class="tab-action"></span>        <i class="text-width">小视频</i> ' },
+                    { text: '<i class="ion-ios-videocam icon-button icon-action" ></i>   <span class="tab-action"></span>        <i class="text-width">视频聊天</i> ' },
+                    { text: '<i class="ion-ios-mic icon-button icon-action" ></i>    <span class="tab-action"></span>        <i class="text-width">语音输入</i> ' },
+                    { text: '<i class="ion-ios-location icon-button icon-action" ></i>    <span class="tab-action"></span>        <i class="text-width">位置</i> ' },
+                    { text: '<i class="ion-ios-eye icon-button icon-action" ></i>    <span class="tab-action"></span>        <i class="text-width">收藏</i> ' },
+                    //{ text: '<i class="ion-more icon-button icon-action" ></i>               <span class="tab-action"></span>        <i class="text-width">More</i> ' },
+                ],
+                //destructiveText: 'Delete',
+                //titleText: 'Modify your album',
+                //cssClass: 'social-actionsheet',
+                //cancelText: 'Cancel',
+                //cancel: function() {
+                //},
+                buttonClicked: function(index) {
+                    alert(index);
+                    if(index == '3') {
+                    }
+                    return true;
+                }
+            });
+            // For example's sake, hide the sheet after two seconds
+            //me.$timeout(function() {
+            //  hideSheet();
+            //}, 2000);
+        };
+
+
         window.addEventListener("native.keyboardshow", function(e){
             viewScroll.scrollBottom();
         });
+
+
     }
 ])
